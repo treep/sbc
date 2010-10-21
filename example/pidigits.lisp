@@ -1,0 +1,49 @@
+;; The Computer Language Shootout
+;; http://shootout.alioth.debian.org/
+;;
+;; adapted from the Java and Python versions by Robert Brown 2006-10-06
+
+(extreme-optimizing)
+
+(defconstant +digits-per-line+ 10)
+(deftype digit () '(integer 0 9))
+
+(declaim (ftype (function () function) make-digit-generator)
+         (inline make-digit-generator))
+(defun make-digit-generator ()
+  (let ((zq 1) (zr 0) (zt 1) (k 0) (4k+2 2) (2k+1 1))
+    (declare (type integer zq zr zt)
+             (type fixnum k 4k+2 2k+1))
+    (flet ((extract (j)
+             (the digit (floor (+ (* zq j) zr) zt)))
+           (compose (aq ar at bq br bt)
+             (setq zq (* aq bq)
+                   zr (+ (* aq br) (* ar bt))
+                   zt (* at bt))))
+      #'(lambda ()
+          (let ((y (extract 3)))
+            (declare (type digit y))
+            (loop :while (not (= y (extract 4)))
+                  :do (compose zq zr zt (incf k) (incf 4k+2 4) (incf 2k+1 2))
+                      (setf y (extract 3)))
+            (compose 10 (* -10 y) 1 zq zr zt)
+            y)))))
+
+(main (digits)
+    ()
+  (let ((digits-printed 0)
+        (next-digit (make-digit-generator)))
+    (declare (type fixnum digits digits-printed)
+             (type function next-digit))
+    (loop :while (plusp digits)
+          :do (if (>= digits +digits-per-line+)
+                  (progn (loop :repeat +digits-per-line+
+                               :do (format t "~d" (funcall next-digit)))
+                         (incf digits-printed +digits-per-line+))
+                  (progn (loop :repeat digits
+                               :do (format t "~d" (funcall next-digit)))
+                         (loop :repeat (- +digits-per-line+ digits)
+                               :do (format t " "))
+                         (incf digits-printed digits)))
+              (format t "~a:~d~%" #\Tab digits-printed)
+              (decf digits +digits-per-line+))))

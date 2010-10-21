@@ -1,0 +1,53 @@
+
+SBC
+
+  Is a helper script for building stand alone executables with SBCL.
+  (an executable is stil large - around 20-50 mb per program).
+
+INSTALL
+
+  A script can be installed to the /opt/bin direcory, type:
+
+    $ ./install.sh
+
+USAGE
+
+  Type
+
+    $ sbc
+
+  for view the usage message.
+
+EXAMPLE - pidigits from shootout.alioth.debian.org.
+
+  pidigits.lisp (in example directory) has MAIN entry point:
+
+    (main (digits)
+        ()
+      ...)
+
+  The following commands produce binary executable pidigits.lisp.bin:
+
+    sbc example/pidigits.lisp :output "\"pidigits.sbcl\""
+
+    [undoing binding stack and other enclosing state... done]
+    [saving current Lisp image into pidigits.sbcl:
+    writing 3512 bytes from the read-only space at 0x01000000
+    writing 2256 bytes from the static space at 0x01100000
+    writing 27541504 bytes from the dynamic space at 0x09000000
+    done]
+
+  And program can be used:
+
+    ./pidigits.sbcl 100
+
+    3141592653	:10
+    5897932384	:20
+    6264338327	:30
+    9502884197	:40
+    1693993751	:50
+    0582097494	:60
+    4592307816	:70
+    4062862089	:80
+    9862803482	:90
+    5342117067	:100

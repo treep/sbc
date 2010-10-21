@@ -1,0 +1,23 @@
+#!/bin/sh
+#
+# this is /opt/bin/sbc script
+#
+
+set -e
+
+## memory requires: 256 MB maximum
+sbcl_dynamic_space_size=256
+
+## run sbcl in simplest mode
+sbcl --dynamic-space-size "${sbcl_dynamic_space_size}" \
+     --noinform                                        \
+     --disable-ldb                                     \
+     --lose-on-corruption                              \
+     --end-runtime-options                             \
+     --noprint                                         \
+     --no-userinit                                     \
+     --no-sysinit                                      \
+     --disable-debugger                                \
+     --load "/opt/sbc/systems.lisp"                    \
+     --load "/opt/sbc/compile.lisp"                    \
+     "$@"
